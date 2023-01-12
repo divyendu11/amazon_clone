@@ -50,4 +50,12 @@
     2) Create product component
     3) Use rating component in product component
 
-12)
+12) Create Product details screen
+    1) Fetch product from backend
+    2) Create 3 columns for image, info and action
+
+13) Create loading and message component
+    1) Creating loading component
+    2) use spinner component
+    3) create message component 
+    4) create utils.js to define get error function
