@@ -1,5 +1,5 @@
 import { useContext, useEffect, useReducer } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from 'axios';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -18,7 +18,7 @@ const reducer = (state, action) => {
    switch (action.type) {
       case 'FETCH_REQUEST':
          return { ...state, loading: true };
-      case 'FETCH_SUCCESS':
+      case 'FETCH_SUCCESS': 
          return { ...state, product: action.payload, loading: false };
       case 'FETCH_FAIL':
          return { ...state, loading: false, error: action.payload };
@@ -31,7 +31,7 @@ const reducer = (state, action) => {
 
 
 function ProductScreen() {
-
+   const navigate = useNavigate(); //Using navigate hook to navigate to product screen
    const parmas = useParams();
    const { slug } = parmas;
 
@@ -61,8 +61,21 @@ function ProductScreen() {
    }, [slug]);
 
    const {state, dispatch: ctxDispatch} = useContext(Store);
-   const addToCartHandler = () => {
-      ctxDispatch({type:'CART_ADD_ITEM',payload:{...product,quantity:1}})
+   const {cart} = state;
+
+   const addToCartHandler = async() => {
+      const existItem = cart.cartItems.find((x) => x._id === product._id);
+      const quantity = existItem ? existItem.quantity+1:1;
+      const {data} = await axios.get(`/api/products/${product._id}`);
+
+      if (data.countInStock<quantity) {
+         window.alert('Sorry, product is out of stock')
+         
+         return;
+      }
+
+      ctxDispatch({type:'CART_ADD_ITEM',payload:{...product,quantity}});
+      navigate('/cart');
    }
 
 

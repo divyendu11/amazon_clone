@@ -10,6 +10,7 @@ import Badge from 'react-bootstrap/esm/Badge';
 import Nav from "react-bootstrap/Nav";
 import { useContext } from 'react';
 import { Store } from './Store';
+import CartScreen from './screens/CartScreen';
 
 function App() {
   const {state} = useContext(Store);
@@ -31,7 +32,8 @@ function App() {
                 <Link to = '/cart' className='nav-link'>
                   Cart
                   {cart.cartItems.length > 0 && (
-                    <Badge pill bg='danger'> {cart.cartItems.length}</Badge>
+                    <Badge pill bg='danger'> {cart.cartItems.reduce((a,c)=> a+c.quantity,0)}</Badge>
+                    // setting up a javascript reduce function to add up quantity
                   )
         
                   }
@@ -45,7 +47,7 @@ function App() {
           <Container className='mt-3'>
           <Routes>
             <Route path='/product/:slug' element={<ProductScreen/>}/>
-
+            <Route path='/cart' element={<CartScreen />}></Route>
             <Route path='/' element={<HomeScreen />} />
           </Routes>
           </Container>
